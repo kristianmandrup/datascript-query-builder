@@ -1,6 +1,6 @@
 {
   "name": "dqb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Datascript query builder",
   "main": "dist/datascript-query-builder.js",
   "scripts": {

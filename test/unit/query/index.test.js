@@ -73,7 +73,7 @@ describe('Query', () => {
   it('builds param values', done => {
     // ':find': '?name-value ?age-value',
     // ':in': '$ ?name ?age',
-    expect(params.values).to.eql(['kris', 32, 'Alice', 'Bob']);
+    expect(params.values).to.eql(['kris', 32, ['single', 'divorced'], ['slave'], 'Alice', 'Bob']);
     done();
   });
 

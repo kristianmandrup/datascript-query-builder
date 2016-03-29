@@ -15,7 +15,7 @@ export default class NotEq extends Eq {
 NotEq.create = (name, value, where) => {
   if (typeof name === 'object') {
     var key = Object.keys(name)[0];
-    value = name[key];
+    value = name[key].$nin;
     name = key;
     where = value;
   }

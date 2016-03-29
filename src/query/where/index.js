@@ -17,12 +17,18 @@ export default class Where {
   }
 
   setValue(param) {
-    // ignore Object values
-    if (typeof param === 'object') {
+    if (Array.isArray(param)) {
+      this.values.push(param);
       return;
     }
-    if (typeof param !== 'undefined') {
-      this.values.push(param);
+    // ignore Object values
+    switch (typeof param) {
+      case 'object':
+        return;
+      case 'undefined':
+        return;
+      default:
+        this.values.push(param);
     }
   }
 
