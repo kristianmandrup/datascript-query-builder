@@ -8,6 +8,33 @@ Datascript query builder
 [![Dependency Status](https://david-dm.org/kristianmandrup/datascript-query-builder.svg)](https://david-dm.org/kristianmandrup/datascript-query-builder)
 [![devDependency Status](https://david-dm.org/kristianmandrup/datascript-query-builder/dev-status.svg)](https://david-dm.org/kristianmandrup/datascript-query-builder#info=devDependencies)
 
+## Query Builder based on FeatherJS query syntax
+
+This syntax is inspired by MongoDB query syntax
+
+- [pagination](http://docs.feathersjs.com/databases/pagination.html)
+- [querying](http://docs.feathersjs.com/databases/querying.html)
+
+### Usage
+
+```js
+import {QueryBuilder, Result} from 'dqb';
+
+// first 10 entities older than 32 years, sorted by name
+var query = {
+  age: {$gt: 32},
+  $limit: 10,
+  $sort: {name: 1}
+};
+
+// Create Datalog, ie Datascript/Datomic query from FeatherJS query Object
+// Search :person entities only...
+var result = new QueryBuilder('person', query).build();
+
+// prepare result using special pagination params ($limit, ...)
+return new Result(result, query).build();
+```
+
 ### Development
 
 Write your code in `src`. The entry file is what you named the project in kebab case ([although the filename

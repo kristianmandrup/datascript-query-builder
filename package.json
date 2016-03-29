@@ -1,5 +1,5 @@
 {
-  "name": "datascript-query-builder",
+  "name": "dqb",
   "version": "0.0.1",
   "description": "Datascript query builder",
   "main": "dist/datascript-query-builder.js",
@@ -57,9 +57,10 @@
   },
   "babelBoilerplateOptions": {
     "entryFileName": "datascript-query-builder",
-    "mainVarName": "datascriptQueryBuilder"
+    "mainVarName": "dqb"
   },
   "dependencies": {
-    "sugar": "^1.4.1"
+    "sugar": "^1.4.1",
+    "lodash": "^3.10.1"
   }
 }
