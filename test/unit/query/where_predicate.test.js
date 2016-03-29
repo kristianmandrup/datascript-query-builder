@@ -16,24 +16,22 @@ describe('Predicate', () => {
     done();
   });
 
+  let options = {mode: 'inline', entityName: 'person'};
+  let where = {};
+
   it('age > 32', done => {
-    let pred = new Predicate('age', {$gt: 32});
+    let pred = new Predicate('age', {$gt: 32}, where);
+    pred.options = options;
     let exp = pred.build()[':where'];
-    expect(exp).to.eql(`[(> [?e ?age 32])]`);
+    expect(exp).to.eql(`[(> ?e :person/age 32)]`);
     done();
   });
 
   it('age < 32', done => {
-    let pred = new Predicate('age', {$lt: 32});
+    let pred = new Predicate('age', {$lt: 32}, where);
+    pred.options = options;
     let exp = pred.build()[':where'];
-    expect(exp).to.eql(`[(< [?e ?age 32])]`);
-    done();
-  });
-
-  it('age == 32', done => {
-    let pred = new Predicate('age', {$eq: 32});
-    let exp = pred.build()[':where'];
-    expect(exp).to.eql(`[?e ?age 32]`);
+    expect(exp).to.eql(`[(< ?e :person/age 32)]`);
     done();
   });
 });

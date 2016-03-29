@@ -15,6 +15,9 @@ describe('Or', () => {
     done();
   });
 
+  let options = {mode: 'inline', entityName: 'person'};
+  let where = {};
+
   it('name == "kris" or age > 32', done => {
     let or = new Or({$or: [
       {name: 'kris',},

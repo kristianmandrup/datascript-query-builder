@@ -26,11 +26,11 @@ export default class Eq extends Base {
   }
 
   get clause() {
-    return `?e ${this.attributeName} ${this._nameVal}`;
+    return `?e ${this.attributeName} ${this._attributeVal}`;
   }
 
-  get _nameVal() {
-    return `?${this.name}-value`;
+  get _attributeVal() {
+    return this.mode === 'inline' ? this._val : `?${this.name}-value`;
   }
 
   get _val() {

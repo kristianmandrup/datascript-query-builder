@@ -19,6 +19,9 @@ describe('Id', () => {
     '?id'
   ];
 
+  let options = {mode: 'inline', entityName: 'person'};
+  let where = {};
+
   it('person.id == 27', done => {
     let entityClass = 'person';
     let id = new Id(entityClass, 27);

@@ -25,6 +25,8 @@ describe('Query', () => {
       { name: 'Bob' }
     ]
   });
+  // query.options = {mode: 'inline'}
+
   let built = query.build();
   let q = built.query;
   let params = built.params;
@@ -35,7 +37,7 @@ describe('Query', () => {
       '[(> ?e ?age ?age-value)]',
       '[?e ?status ?status-value]',
       '(not [?e ?role ?role-value])',
-      '(or [?e ?name ?name-value-1] [?e ?name ?name-value-2])'
+      '(or [?e ?name ?name-value])'
   ];
 
   let expected = {
@@ -43,7 +45,8 @@ describe('Query', () => {
     // TODO: should we discard :find and use pull?
     // or at least have this option?
     ':find': `?name-value ?age-value ?status-value ?role-value`,
-    ':in': `?name-value ?age-value [?status-value ...] [?role-value ...]`,
+    // ':in': `?name-value ?age-value [?status-value ...] [?role-value ...]`,
+    ':in': '?name ?name-value ?age ?age-value ?status [?status-value ...] ?role [?role-value ...]',
     ':where': whereClauses
   };
 

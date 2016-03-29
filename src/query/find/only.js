@@ -30,7 +30,7 @@ export default class Only {
 
   get _in() {
     return this.attrs.map(name => {
-      return this._attName(`?${name}`);
+      return this._attName(name);
     });
   }
 

@@ -30,8 +30,14 @@ export default class Or extends Base {
   }
 
   get clauses() {
+    var clauses = [];
     return this.list.reduce((prev, next) => {
-      return prev.concat(this.clause(next));
+      var clause = this.clause(next);
+      if (clauses.indexOf(clause) > -1) {
+        return prev;
+      }
+      clauses.push(clause);
+      return prev.concat(clause);
     }, []);
   }
 

@@ -13,7 +13,6 @@ export const predicateMap = {
 
 import Base from './base';
 import Eq from './eq';
-import Builder from '../builder';
 
 // name: {$ne: 'Alice'} => $ne: [name: 'Alice'] ??
 export default class Predicate extends Base {
@@ -50,7 +49,7 @@ export default class Predicate extends Base {
       builder.options = this.options;
       return builder.where;
     }
-    var eq = new Eq(this.name, this.value, this._where);
+    var eq = Eq.create(this.name, this.value, this._where);
     eq.options = this.options;
     return eq.clause;
   }

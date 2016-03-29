@@ -14,6 +14,7 @@ describe('Query', () => {
     done();
   });
   let qBuilder = new QueryBuilder('person');
+  qBuilder.options = {mode: 'inline'};
 
   it('find: builds query', done => {
     let result = qBuilder.query({
@@ -25,8 +26,8 @@ describe('Query', () => {
     let params = result.params;
 
     let whereClauses = [
-        '[?e :person/name ?name-value]',
-        '[(> ?e :person/age ?age-value)]'
+        `[?e :person/name 'kris']`,
+        `[(> ?e :person/age 32)]`
     ];
 
     let expected = {
