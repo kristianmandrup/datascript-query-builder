@@ -7,17 +7,20 @@ export default class Selector {
     this.params = params;
   }
 
+  _normalize(param) {
+    return this.params.$select ? this.params.$select : param;
+  }
+
   get attrs() {
-    if (this.params.$select) {
-      return this.params.$select;
-    }
     if (Array.isArray(this.params)) {
       return this.params.map(param => {
-        return Object.keys(param)[0];
+        var key = Object.keys(param)[0];
+        // TODO: shitty hack! $select should not be allowed here, should throw error!?
+        return this._normalize(key);
       });
     }
     if (typeof this.params === 'object') {
-      return Object.keys(this.params);
+      return this.params.$select ? this.params.$select : Object.keys(this.params);
     }
     return [];
   }

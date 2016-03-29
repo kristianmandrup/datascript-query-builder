@@ -1,6 +1,10 @@
 import { toTupleList } from '../../util';
 import Builder from './builder';
 
+function specialAttrib(name) {
+  return name.match(/\$/g);
+}
+
 export default class Where {
   constructor(params, options) {
     this.options = options;
@@ -9,7 +13,7 @@ export default class Where {
     }
     this.params = params;
     this.values = [];
-    this.names = [];
+    this.names = new Set();
   }
 
   setValue(param) {
@@ -17,7 +21,9 @@ export default class Where {
     if (typeof param === 'object') {
       return;
     }
-    this.values.push(param);
+    if (typeof param !== 'undefined') {
+      this.values.push(param);
+    }
   }
 
   setName(name) {
@@ -25,7 +31,9 @@ export default class Where {
     if (typeof name !== 'string') {
       return;
     }
-    this.names.push(name);
+    if (!specialAttrib(name)) {
+      this.names.add(name);
+    }
   }
 
   build() {

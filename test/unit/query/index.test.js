@@ -30,7 +30,6 @@ describe('Query', () => {
   let built = query.build();
   let q = built.query;
   let params = built.params;
-  let paramNames = built.paramNames;
 
   let whereClauses = [
       '[?e ?name ?name-value]',
@@ -74,14 +73,14 @@ describe('Query', () => {
   it('builds param values', done => {
     // ':find': '?name-value ?age-value',
     // ':in': '$ ?name ?age',
-    expect(params).to.eql(['kris', 32]);
+    expect(params.values).to.eql(['kris', 32, 'Alice', 'Bob']);
     done();
   });
 
   it('builds param names', done => {
     // ':find': '?name-value ?age-value',
     // ':in': '$ ?name ?age',
-    expect(paramNames).to.eql(['name', 'age', 'status', 'role']);
+    expect(params.names).to.eql(['name', 'age', 'status', 'role']);
     done();
   });
 

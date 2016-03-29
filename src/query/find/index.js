@@ -22,10 +22,10 @@ import Selector from './selector';
 export default class Find {
   constructor(params) {
     if (typeof params === 'object') {
-      params = toTupleObjList(params);
+      params = params.$select ? params.$select : toTupleObjList(params);
     }
     this.params = params;
-    this.selector = new Selector(this.params);
+    this.selector = new Selector(params);
   }
 
   build() {

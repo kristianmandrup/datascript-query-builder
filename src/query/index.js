@@ -32,7 +32,7 @@ export default class Query {
       },
       params: {
         values: this._where.values,
-        names: this._where.names
+        names: Array.from(this._where.names)
       }
     };
     res.params.getNames = (mapFn) => {

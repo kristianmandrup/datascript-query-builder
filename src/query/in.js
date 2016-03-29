@@ -29,7 +29,7 @@ export default class In {
   _filtered(attrs) {
     return attrs.reduce((prev, next) => {
       var attr = stringify(next);
-      return specialAttrib(attr) ? prev : prev.concat([attr]);
+      return specialAttrib(attr) ? prev : prev.concat([next]);
     }, []);
   }
 
