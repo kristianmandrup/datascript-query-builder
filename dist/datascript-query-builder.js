@@ -69,7 +69,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _result = __webpack_require__(20);
+	var _result = __webpack_require__(22);
 	
 	Object.defineProperty(exports, 'Result', {
 	  enumerable: true,
@@ -100,6 +100,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _pull2 = _interopRequireDefault(_pull);
 	
+	var _entity = __webpack_require__(20);
+	
+	var _entity2 = _interopRequireDefault(_entity);
+	
+	var _datoms = __webpack_require__(21);
+	
+	var _datoms2 = _interopRequireDefault(_datoms);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -113,9 +121,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	
 	  _createClass(QueryBuilder, [{
+	    key: 'datoms',
+	    value: function datoms(params) {
+	      return new _datoms2.default(this.entityClass, params).build();
+	    }
+	  }, {
 	    key: 'entities',
 	    value: function entities(params) {
-	      return new Entity(this.entityClass, params).build();
+	      return new _entity2.default(this.entityClass, params).build();
 	    }
 	  }, {
 	    key: 'byId',
@@ -13947,16 +13960,123 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	// Efficiently lookup all entities of a given type
+	// http://augustl.com/blog/2013/datomic_direct_index_lookup/
+	
+	// The code to d/datoms flows as following:
+	// - Pass the datomic db whose indexes we want to look up.
+	// - Pass the index to use. We want the :avet index. (Attribute, value, entity, transaction)
+	// The following arguments are the components to look up in the index.
+	// The first entry in :avet is :a. So we pass :attendant/public-id, the attribute we want to look up.
+	// The second entry in :avet is :v. So we pass public-id, the value we want to look up.
+	//
+	// This will give us a raw seq of facts. Since we know that the attribute :attendant/public-id is set to unique, we can just get the (first) one.
+	
+	var Entity = function () {
+	  function Entity(entityClass, params) {
+	    _classCallCheck(this, Entity);
+	
+	    this.entityClass = entityClass;
+	    this.idKey = Object.keys(params)[0];
+	    this.idValue = params[this.idKey];
+	  }
+	
+	  // build lookup ref
+	
+	
+	  _createClass(Entity, [{
+	    key: "build",
+	    value: function build() {
+	      return "[:" + this.entityClass + "/" + this.idKey + " " + this.idValue;
+	    }
+	  }]);
+	
+	  return Entity;
+	}();
+
+	exports.default = Entity;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	// Efficiently lookup all entities of a given type
+	// http://augustl.com/blog/2013/datomic_direct_index_lookup/
+	
+	// The code to d/datoms flows as following:
+	// - Pass the datomic db whose indexes we want to look up.
+	// - Pass the index to use. We want the :avet index. (Attribute, value, entity, transaction)
+	// The following arguments are the components to look up in the index.
+	// The first entry in :avet is :a. So we pass :attendant/public-id, the attribute we want to look up.
+	// The second entry in :avet is :v. So we pass public-id, the value we want to look up.
+	//
+	// This will give us a raw seq of facts. Since we know that the attribute :attendant/public-id is set to unique, we can just get the (first) one.
+	
+	var Datoms = function () {
+	  function Datoms(entityClass, id) {
+	    _classCallCheck(this, Datoms);
+	
+	    this.entityClass = entityClass;
+	    this.idKey = id;
+	  }
+	
+	  // (d/entity db
+	  //   (:e (first
+	  //     (d/datoms db :avet :attendant/public-id public-id)))
+	  //   )
+	
+	
+	  _createClass(Datoms, [{
+	    key: 'build',
+	    value: function build() {
+	      return ':avet :' + this.entityClass + '/' + this.idKey + ' ' + this.idKey;
+	    }
+	  }]);
+	
+	  return Datoms;
+	}();
+	
+	exports.default = Datoms;
+	
+	
+	Datoms.unpack = function (index) {
+	  return index[0][':e'];
+	};
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Result = function () {
-	  function Result(result) {
+	  function Result(result, params) {
 	    _classCallCheck(this, Result);
 	
 	    this.result = result;
-	    this.params = result.params;
+	    this.params = result.params || params;
 	  }
 	
 	  _createClass(Result, [{

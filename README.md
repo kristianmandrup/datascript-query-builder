@@ -19,20 +19,16 @@ This syntax is inspired by MongoDB query syntax
 
 This Query builder consists of the following:
 - QueryBuilder
+  - Datoms
   - Entity
   - Pull
   - Query
 - Result
 
-`Entity` is used to access entity data directly (via index). We use it to find all ids for a given Entity class.
-
-`Pull` can use the Pull one and Pull many APIs to retrieve specific Entity attribute data for one or more entities (by Id).
-
+`Datoms` is used to access entity data directly (via index). We use it to find all ids for a given Entity class. `Entity` is used to access entity data directly. `Pull` can use the Pull one and Pull many APIs to retrieve specific Entity attribute data for one or more entities (by Id).
 `Query` is a general purpose query, used for finding Entity data that match specific criteria/constraints (ie. predicates etc.).
 
 The `QueryBuilder` is a facade to all the different query variants.
-
-`QueryBuilder` API:
 - `entities(params)`
 - `byId(params)`
 - `query(params, options)`
@@ -41,8 +37,6 @@ The `QueryBuilder` is a facade to all the different query variants.
 A result is typically in the form: `[['kris', 32]]` or `[['name', 'kris', 'age', 32]]`
 however, we would often like it in JSON map form, like `{name: 'kris', 'age': 32}`.
 `Result` is aimed to facilitate this enrichment and also pagination (limiting window/size of results returned) and sorting.
-
-- `var result = new Result(queryResult).build()`
 
 ### Usage
 
@@ -88,8 +82,9 @@ The Datascript Query builder was initially built for use in [feathers-datascript
 // Query person entities matching criteria
 var q1 = {age: {$gt: 32}, 'last-name': 'Johnson'};
 var datalogQuery = qb.query(q1).build();
-var qResult = conn.d.q(datalogQuery);
-var result = new Result(qResult).build();
+var result = conn.d.q(datalogQuery).then(qResult =>{
+  return new Result(qResult).build();
+});
 ```
 
 *Pull :person entity 27*
@@ -98,8 +93,10 @@ var result = new Result(qResult).build();
 // Pull :person entity 27
 var personPull = qb.byId({id: 27}, options).build();
 var params = {$skip: 20, $limit: 20};
-var data = conn.d.pull(personPull);
-var result = new Result(data, params).build();
+var data = conn.d.pull(personPull).then(pulled => {
+  return new Result(pulled, params).build();  
+});
+
 ```
 
 *Fetch all :person entities via index*
@@ -108,16 +105,29 @@ var result = new Result(data, params).build();
 // Fetch all :person entities via index
 // See: http://augustl.com/blog/2013/datomic_direct_index_lookup/
 var datomsQuery = qb.datoms('id', options).build();
-var datoms = conn.d.datoms(datomsQuery);
-var entities = conn.d.entity(`(:e (first ${datoms}))`);
+var entities = conn.d.datoms(datomsQuery).then(index => {
+  var datoms = Entity.unpack(index);
+  return conn.d.entity(datoms);
+});
 ```
 
-### Development
+*Get entity by lookup ref*
 
-Write your code in `src`. Run `npm run build` to compile the source into a distributable format.
+```js
+// Get entity by lookup ref: email
+var lookupRef = qb.entity({email: 'kmandrup@gmail.com'}, options).build();
+var person = conn.d.entity(lookupRef).then(entity => {
+  return entity;
+});
+```
 
-Put your unit tests in `test/unit`. The `npm test` command runs the tests using Node. If your library / tests
-require the DOM API, see the `test/setup/node.js` file.
+### Development/Contribution
+
+This is still early alpha. Please help out ;)
+
+Write the code in `src`. Run `npm run build` to compile the source into a distributable format.
+
+Put unit tests in `test/unit`. The `npm test` command runs the tests using Node.
 
 ### npm Scripts
 

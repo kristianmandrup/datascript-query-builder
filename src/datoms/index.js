@@ -10,15 +10,21 @@
 //
 // This will give us a raw seq of facts. Since we know that the attribute :attendant/public-id is set to unique, we can just get the (first) one.
 
-export default class Entity {
-  constructor(entityClass, params) {
+export default class Datoms {
+  constructor(entityClass, id) {
     this.entityClass = entityClass;
-    this.idKey = Object.keys(params)[0];
-    this.idValue = params[this.idKey];
+    this.idKey = id;
   }
 
-  // build lookup ref
+  // (d/entity db
+  //   (:e (first
+  //     (d/datoms db :avet :attendant/public-id public-id)))
+  //   )
   build() {
-    return `[:${this.entityClass}/${this.idKey} ${this.idValue}`;
+    return `:avet :${this.entityClass}/${this.idKey} ${this.idKey}`;
   }
 }
+
+Datoms.unpack = (index) => {
+  return index[0][':e'];
+};

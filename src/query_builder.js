@@ -1,5 +1,7 @@
 import Query from './query';
 import Pull from './pull';
+import Entity from './entity';
+import Datoms from './datoms';
 
 export default class QueryBuilder {
   constructor(entityClass, options) {
@@ -16,6 +18,10 @@ export default class QueryBuilder {
         return `${this.entityClass}/${name}`;
       }
     };
+  }
+
+  datoms(params) {
+    return new Datoms(this.entityClass, params).build();
   }
 
   entities(params) {
