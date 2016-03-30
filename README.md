@@ -37,13 +37,6 @@ The `QueryBuilder` is a facade to all the different query variants.
 - `byId(params)`
 - `query(params, options)`
 
-```js
-var qb = new QueryBuilder('person', options);
-var datalogQuery = qb.query(q1);
-var entities = qb.entities('id', options);
-var personData = qb.byId({id: 27}, options);
-```
-
 `Result` is used to pre-process a query result from datascript/datomic DB.
 A result is typically in the form: `[['kris', 32]]` or `[['name', 'kris', 'age', 32]]`
 however, we would often like it in JSON map form, like `{name: 'kris', 'age': 32}`.
@@ -52,6 +45,16 @@ however, we would often like it in JSON map form, like `{name: 'kris', 'age': 32
 - `var result = new Result(queryResult).build()`
 
 ### Usage
+
+In `package.json`
+
+```
+  "dqb": "datascript-query-builder"
+```
+
+Alternatively clone this repo and `npm link` it locally when "hacking".
+
+API usage:
 
 ```js
 import {QueryBuilder, Result} from 'dqb';
@@ -68,7 +71,45 @@ var query = {
 var result = new QueryBuilder('person', query).build();
 
 // prepare result using special pagination params ($limit, ...)
-return new Result(result, query).build();
+return new Result(result).build();
+```
+
+### More usage examples
+
+```js
+var qb = new QueryBuilder('person', options);
+```
+
+The Datascript Query builder was initially built for use in [feathers-datascript](https://github.com/kristianmandrup/feathers-datascript), a [FeathersJS](www.feathersjs.com) compatible DB driver/adapter.
+
+*Query :person entities matching criteria*
+
+```js
+// Query person entities matching criteria
+var q1 = {age: {$gt: 32}, 'last-name': 'Johnson'};
+var datalogQuery = qb.query(q1).build();
+var qResult = conn.d.q(datalogQuery);
+var result = new Result(qResult).build();
+```
+
+*Pull :person entity 27*
+
+```js
+// Pull :person entity 27
+var personPull = qb.byId({id: 27}, options).build();
+var params = {$skip: 20, $limit: 20};
+var data = conn.d.pull(personPull);
+var result = new Result(data, params).build();
+```
+
+*Fetch all :person entities via index*
+
+```js
+// Fetch all :person entities via index
+// See: http://augustl.com/blog/2013/datomic_direct_index_lookup/
+var datomsQuery = qb.datoms('id', options).build();
+var datoms = conn.d.datoms(datomsQuery);
+var entities = conn.d.entity(`(:e (first ${datoms}))`);
 ```
 
 ### Development

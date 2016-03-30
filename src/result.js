@@ -1,7 +1,7 @@
 export default class Result {
-  constructor(result) {
+  constructor(result, params) {
     this.result = result;
-    this.params = result.params;
+    this.params = result.params || params;
   }
 
   build() {

@@ -21,8 +21,6 @@ export default class Entity {
   //     (d/datoms db :avet :attendant/public-id public-id)))
   //   )
   build() {
-    return `(d/entity db
-      (:e (first
-        (d/datoms db :avet :${this.entityClass}/${this.idKey} ${this.idKey}))))`;
+    return `:avet :${this.entityClass}/${this.idKey} ${this.idKey}`;
   }
 }
