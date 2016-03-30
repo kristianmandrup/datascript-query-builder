@@ -15,6 +15,42 @@ This syntax is inspired by MongoDB query syntax
 - [pagination](http://docs.feathersjs.com/databases/pagination.html)
 - [querying](http://docs.feathersjs.com/databases/querying.html)
 
+### Design
+
+This Query builder consists of the following:
+- QueryBuilder
+  - Entity
+  - Pull
+  - Query
+- Result
+
+`Entity` is used to access entity data directly (via index). We use it to find all ids for a given Entity class.
+
+`Pull` can use the Pull one and Pull many APIs to retrieve specific Entity attribute data for one or more entities (by Id).
+
+`Query` is a general purpose query, used for finding Entity data that match specific criteria/constraints (ie. predicates etc.).
+
+The `QueryBuilder` is a facade to all the different query variants.
+
+`QueryBuilder` API:
+- `entities(params)`
+- `byId(params)`
+- `query(params, options)`
+
+```js
+var qb = new QueryBuilder('person', options);
+var datalogQuery = qb.query(q1);
+var entities = qb.entities('id', options);
+var personData = qb.byId({id: 27}, options);
+```
+
+`Result` is used to pre-process a query result from datascript/datomic DB.
+A result is typically in the form: `[['kris', 32]]` or `[['name', 'kris', 'age', 32]]`
+however, we would often like it in JSON map form, like `{name: 'kris', 'age': 32}`.
+`Result` is aimed to facilitate this enrichment and also pagination (limiting window/size of results returned) and sorting.
+
+- `var result = new Result(queryResult).build()`
+
 ### Usage
 
 ```js
@@ -37,10 +73,7 @@ return new Result(result, query).build();
 
 ### Development
 
-Write your code in `src`. The entry file is what you named the project in kebab case ([although the filename
-can be changed](https://github.com/babel/generator-babel-boilerplate#i-want-to-change-the-primary-source-file)).
-
-Run `npm run build` to compile the source into a distributable format.
+Write your code in `src`. Run `npm run build` to compile the source into a distributable format.
 
 Put your unit tests in `test/unit`. The `npm test` command runs the tests using Node. If your library / tests
 require the DOM API, see the `test/setup/node.js` file.

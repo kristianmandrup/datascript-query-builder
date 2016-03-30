@@ -18,6 +18,10 @@ export default class QueryBuilder {
     };
   }
 
+  entities(params) {
+    return new Entity(this.entityClass, params).build();
+  }
+
   byId(params) {
     return new Pull(this.entityClass, params).build();
   }
