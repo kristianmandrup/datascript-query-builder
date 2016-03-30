@@ -91,12 +91,12 @@ var result = conn.d.q(datalogQuery).then(qResult =>{
 
 ```js
 // Pull :person entity 27
+// Also see: http://augustl.com/blog/2013/find_by_id_in_datomic/
 var personPull = qb.byId({id: 27}, options).build();
 var params = {$skip: 20, $limit: 20};
 var data = conn.d.pull(personPull).then(pulled => {
   return new Result(pulled, params).build();  
 });
-
 ```
 
 *Fetch all :person entities via index*
