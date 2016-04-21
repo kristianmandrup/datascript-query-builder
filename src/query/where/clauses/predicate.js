@@ -4,11 +4,11 @@
   // }, {});
 
 export const predicateMap = {
-  '$ne': 'not',
-  '$lt': '<',
-  '$lte': '<=',
-  '$gt': '>',
-  '$gte': '>='
+  'ne': 'not',
+  'lt': '<',
+  'lte': '<=',
+  'gt': '>',
+  'gte': '>='
 };
 
 import Base from './base';
@@ -20,10 +20,11 @@ export default class Predicate extends Base {
     super(name);
     var key = Object.keys(predicate)[0];
     this.key = key;
+    this.keyName = key.slice(1);
     this._where = where;
     this.value = predicate[key];
     this.predicate = predicate;
-    this.outputPredicate = this.predicateMap[key];
+    this.outputPredicate = this.predicateMap[this.keyName];
   }
 
   get predicateMap() {
@@ -37,7 +38,7 @@ export default class Predicate extends Base {
   }
 
   get where() {
-    if (this.key === '$eq') {
+    if (this.keyName === 'eq') {
       return this.clause;
     }
     return `[(${this.outputPredicate} ${this.clause})]`;

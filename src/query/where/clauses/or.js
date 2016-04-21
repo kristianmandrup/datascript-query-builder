@@ -5,12 +5,15 @@ export default class Or extends Base {
   constructor(obj, where) {
     super();
     this._where = where;
-    if (!obj.$or) {
+    var key = Object.keys(obj)[0];
+    this.key = key
+    this.keyName = key.slice(1); // $or
+    if (!this.keyName === 'or') {
       // console.error(obj);
-      throw 'Or must be an object with an $or key';
+      throw 'Or must be an object with an or key';
     }
     // group each key/value into a list
-    this.list = obj.$or;
+    this.list = obj[this.keyName];
   }
 
   // $or: or (either)

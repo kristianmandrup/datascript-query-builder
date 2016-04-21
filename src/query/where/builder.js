@@ -17,6 +17,10 @@ export default class Builder {
     this.pred = this._extract(predicate);
   }
 
+  get specialKey() {
+    return this.options.specialKey;
+  }
+
   _extract(predicate) {
     if (Array.isArray(predicate)) {
       return {
@@ -27,7 +31,7 @@ export default class Builder {
     var key = Object.keys(predicate)[0];
     this.value = predicate[key];
     return {
-      key: key.replace('$', ''),
+      key: key.replace(this.specialKey, ''),
       value: this.value
     };
   }

@@ -68,10 +68,35 @@ var result = new QueryBuilder('person', query).build();
 return new Result(result).build();
 ```
 
+For contexts where `$` is not commonly used, you can use
+alternative special key indicators, such as: `.`
+
+```js
+var query = {
+  age: {'.gt': 32},
+  '.limit': 10,
+  '.sort': {':item/name': 1}
+};
+```
+
+You can also supply your pass regular expression for matching special keys, via `options.specialKey` and even
+a custom `options.specialAttrib` function to gain full power.
+
 ### More usage examples
 
 ```js
 var qb = new QueryBuilder('person', options);
+```
+
+With custom special key detection.
+
+```js
+var qb = new QueryBuilder('person', {
+  // specialKey: /^(\$|\.)/,
+  specialAttrib: (name) => {
+    return name.match(/^\$/);
+  }
+});
 ```
 
 The Datascript Query builder was initially built for use in [feathers-datascript](https://github.com/kristianmandrup/feathers-datascript), a [FeathersJS](www.feathersjs.com) compatible DB driver/adapter.
