@@ -1,5 +1,7 @@
 # datascript-query-builder
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/datascript-query-builder.svg)](https://greenkeeper.io/)
+
 Datascript query builder
 
 [![Travis build status](http://img.shields.io/travis/kristianmandrup/datascript-query-builder.svg?style=flat)](https://travis-ci.org/kristianmandrup/datascript-query-builder)
